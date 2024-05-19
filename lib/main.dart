@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Haberler Uygulaması',
       theme: ThemeData(
-        primaryColor: Colors.black,
+        primarySwatch: Colors.green,
       ),
       home: HomePage(),
     );
@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green,
+        selectedItemColor: Colors.black,
         onTap: _onItemTapped,
       ),
     );
@@ -197,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? Icons.thumb_up
                               : Icons.thumb_up_outlined,
                           color:
-                              widget.news[index]['liked'] ? Colors.green : null,
+                              widget.news[index]['liked'] ? Colors.black : null,
                         ),
                         onPressed: () => toggleLike(index),
                       ),
@@ -207,7 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? Icons.bookmark
                               : Icons.bookmark_border,
                           color:
-                              widget.news[index]['saved'] ? Colors.green : null,
+                              widget.news[index]['saved'] ? Colors.black : null,
                         ),
                         onPressed: () => toggleSave(index),
                       ),
