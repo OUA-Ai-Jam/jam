@@ -122,7 +122,6 @@ bool isDarkMode = false;
                   onTap: (value) {
                     setState(() {
                       isDarkMode=value;
-                      
                     });
                   },
                 ),

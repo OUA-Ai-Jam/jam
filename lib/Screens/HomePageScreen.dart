@@ -14,7 +14,7 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
-  late List<Story> story;
+  List<Story> story = [];
 
   Future<String?> aiText() async {
     String duzenlenmis = "";
@@ -149,6 +149,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   @override
   Widget build(BuildContext context) {
+  if(story.isNotEmpty){
     return Scaffold(
       body: _pages(
           context,
@@ -191,5 +192,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
         onTap: _onItemTapped,
       ),
     );
+  }else{
+    return Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      )
+    );
+  }
   }
 }
