@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "589685755378",
+    "project_id": "story-mobile-app-oua",
+    "storage_bucket": "story-mobile-app-oua.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589685755378:android:eead69a6160278c3792f6b",
+        "android_client_info": {
+          "package_name": "com.example.aijam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlIRiT-jPBImKv0aia9R47t6nvaNn5cZk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

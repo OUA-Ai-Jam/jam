@@ -1,7 +1,8 @@
 import 'package:aijam/Models/Story.dart';
+import 'package:aijam/Screens/LoginScreen.dart';
 import 'package:aijam/Screens/ProfileScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
 
 class StoryScreen extends StatefulWidget {
   final List<Story> story;
@@ -43,6 +44,16 @@ class _StoryScreenState extends State<StoryScreen> {
         widget.selectedCategories.contains(item.liked))
         .toList();
 
+    FirebaseAuth.instance
+        .idTokenChanges()
+        .listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+      }
+    });
+
     return SafeArea(
       child: Column(
         children: [
@@ -51,20 +62,7 @@ class _StoryScreenState extends State<StoryScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundImage:
-                      AssetImage('assets/images/profileavatar.png'),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'Olivia Wilson',
-                      style:
-                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
+                UserDetails(),
                 Row(
                   children: [
                     IconButton(
@@ -77,7 +75,13 @@ class _StoryScreenState extends State<StoryScreen> {
                       icon: Icon(Icons.person),
                       onPressed: () {
                         // Profil sayfasına yönlendirme
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ProfileScreen()));
+                        if(FirebaseAuth.instance.currentUser != null) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ProfileScreen()));
+                        }else{
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
+                        }
                       },
                     ),
                   ],
@@ -159,5 +163,34 @@ class _StoryScreenState extends State<StoryScreen> {
         ],
       ),
     );
+  }
+
+  UserDetails() {
+    if(FirebaseAuth.instance.currentUser != null){
+      return Row(
+        children: [
+          CircleAvatar(
+            backgroundImage:
+            AssetImage('assets/images/profileavatar.png'),
+          ),
+          SizedBox(width: 8),
+          Text(
+            FirebaseAuth.instance.currentUser!.displayName ?? '',
+            style:
+            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ],
+      );
+    }else{
+      return Row(
+        children: [
+          Text(
+            'Giriş Yapın',
+            style:
+            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ],
+      );
+    }
   }
 }

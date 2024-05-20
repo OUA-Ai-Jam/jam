@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:aijam/Widgets/EditItem.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ionicons/ionicons.dart';
@@ -13,6 +14,12 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  String email = FirebaseAuth.instance.currentUser!.email ?? "";
+  String name = FirebaseAuth.instance.currentUser!.displayName ?? "";
+  void updateProfile() {
+    FirebaseAuth.instance.currentUser!.updateDisplayName(name);
+    //FirebaseAuth.instance.currentUser!.verifyBeforeUpdateEmail(email);
+  }
 
   String cinsiyet = "Erkek";
   @override
@@ -30,7 +37,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 10),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                updateProfile();
+                setState(() {
+
+                });
+              },
             style: IconButton.styleFrom(
               backgroundColor: Colors.lightBlueAccent,
             ),
@@ -69,9 +81,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                          child: const Text("Resim Yükle"))
                       ],),
                   ),
-                  const EditItem(
+                  EditItem(
                     title: "İsim",
-                    widget: TextField(),
+                    widget: TextFormField(initialValue: FirebaseAuth.instance.currentUser!.displayName ?? "",onChanged: (value){
+                      name = value;
+                    },),
                     ),
                     const SizedBox(height: 40),
                     EditItem(
@@ -120,8 +134,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       title: "Yaş",
                       ),
                       const SizedBox(height: 40),
-                      const EditItem(
-                        widget: TextField(), 
+                      EditItem(
+                        widget: TextFormField(initialValue: FirebaseAuth.instance.currentUser!.email,onChanged: (value){
+                          email = value;
+                        },),
                         title: "E-Mail",
                       ),
             ],),
