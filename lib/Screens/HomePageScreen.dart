@@ -1,3 +1,4 @@
+import 'package:aijam/Models/Story.dart';
 import 'package:aijam/Screens/CategoriesScreen.dart';
 import 'package:aijam/Screens/LikedNewsScreen.dart';
 import 'package:aijam/Screens/SavedNewsScreen.dart';
@@ -13,30 +14,49 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
+  late List<Story> story;
 
-  Future<void> aiText() async {
-    try{
-      final model = GenerativeModel(model: 'gemini-pro', apiKey: "AIzaSyA1GDMT85HNnsaCO6avc0zTGE-skFwowSU");
+  Future<String?> aiText() async {
+    String duzenlenmis = "";
+    final model = GenerativeModel(model: 'gemini-pro', apiKey: "AIzaSyA1GDMT85HNnsaCO6avc0zTGE-skFwowSU");
 
-      final prompt = "Sihirli bir sırt çantasıyla ilgili bir hikaye yazın. Başlık ve hikayenin kendisi ve anahtar kelimeler ve ilgi çekici 100 harfi geçmeyen bir açıklama olarak ayırmanı ve bunları json formatında istiyorum. Jsonda title,story ,description ve keywords olacak.";
-      final content = [Content.text(prompt)];
-      final response = await model.generateContent(content);
-      print(response.text);
-    }catch(e){
-      print(e);
+    final prompt = "Sıradışı 2 tane hikaye yazın. Başlık ve hikayenin kendisi (yaklaşık 300 kelime olmalı) ve anahtar kelimeler (json formatında olmalı) ve ilgi çekici 100 harfi geçmeyen bir açıklama cümlesi olarak ayırmanı ve bunları json formatında dizi olarak istiyorum. Jsonda title,story ,description ve keywords olacak.";
+    final content = [Content.text(prompt)];
+    final response = await model.generateContent(content);
+    duzenlenmis = response.text!.replaceAll('```', '');
+    duzenlenmis = duzenlenmis.replaceAll('json', '');
+
+    print(duzenlenmis);
+    return duzenlenmis;
+  }
+
+  void _fetchAndParseStories() async {
+    try {
+      final responseText = await aiText();
+
+      if (responseText != null) {
+        setState(() {
+          story = storyFromJson(responseText);
+        });
+      } else {
+        // Handle the case where the response is null (e.g., error, no data)
+        print('Error: No data received from the AI model.');
+      }
+    } catch (error) {
+      // Handle potential errors during the AI request
+      print('Error fetching stories: $error');
     }
-
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    aiText();
+    _fetchAndParseStories();
   }
 
   int _selectedIndex = 2;
   Set<String> _selectedCategories = {};
+
   List<Map<String, dynamic>> news = List.generate(
     20,
         (index) => {
@@ -60,19 +80,19 @@ class _HomePageScreenState extends State<HomePageScreen> {
   List<Map<String, dynamic>> get savedNews =>
       news.where((item) => item['saved']).toList();
 
-  List<Map<String, dynamic>> get filteredNews {
+  List<Story> get filteredNews {
     if (_selectedCategories.isEmpty) {
-      return news;
+      return story;
     } else {
-      return news
-          .where((item) => _selectedCategories.contains(item['category']))
+      return story
+          .where((item) => _selectedCategories.contains(item.saved))
           .toList();
     }
   }
 
   static List<Widget> _pages(
       BuildContext context,
-      List<Map<String, dynamic>> news,
+      List<Story> story,
       List<Map<String, dynamic>> likedNews,
       List<Map<String, dynamic>> savedNews,
       Set<String> selectedCategories,
@@ -86,7 +106,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
           onCategorySelected: onCategorySelected,
           selectedCategories: selectedCategories),
       StoryScreen(
-          news: news,
+          story: story,
           selectedCategories: selectedCategories,
           onCategorySelected: onCategorySelected,
           toggleLike: toggleLike,

@@ -1,15 +1,17 @@
+import 'package:aijam/Models/Story.dart';
+import 'package:aijam/Screens/ProfileScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class StoryScreen extends StatefulWidget {
-  final List<Map<String, dynamic>> news;
+  final List<Story> story;
   final Set<String> selectedCategories;
   final Function(String) onCategorySelected;
   final Function(int) toggleLike;
   final Function(int) toggleSave;
 
   StoryScreen(
-      {required this.news,
+      {required this.story,
         required this.selectedCategories,
         required this.onCategorySelected,
         required this.toggleLike,
@@ -21,44 +23,24 @@ class StoryScreen extends StatefulWidget {
 
 class _StoryScreenState extends State<StoryScreen> {
 
-  Future<void> aiText() async {
-    try{
-      final model = GenerativeModel(model: 'gemini-pro', apiKey: "AIzaSyA1GDMT85HNnsaCO6avc0zTGE-skFwowSU");
-
-      final prompt = "Sihirli bir sırt çantasıyla ilgili bir hikaye yazın. Başlık ve hikayenin kendisi ve anahtar kelimeler ve ilgi çekici 100 harfi geçmeyen bir açıklama olarak ayırmanı ve bunları json formatında istiyorum. Jsonda title,story ,description ve keywords olacak.";
-      final content = [Content.text(prompt)];
-      final response = await model.generateContent(content);
-      print(response.text);
-    }catch(e){
-      print(e);
-    }
-
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    aiText();
-  }
-
   void toggleLike(int index) {
     setState(() {
-      widget.news[index]['liked'] = !(widget.news[index]['liked'] ?? false);
+      widget.story[index].liked = !(widget.story[index].liked ?? false);
     });
   }
 
   void toggleSave(int index) {
     setState(() {
-      widget.news[index]['saved'] = !(widget.news[index]['saved'] ?? false);
+      widget.story[index].saved = !(widget.story[index].saved ?? false);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final filteredNews = widget.news
+    final filteredNews = widget.story
         .where((item) =>
     widget.selectedCategories.isEmpty ||
-        widget.selectedCategories.contains(item['category']))
+        widget.selectedCategories.contains(item.liked))
         .toList();
 
     return SafeArea(
@@ -95,6 +77,7 @@ class _StoryScreenState extends State<StoryScreen> {
                       icon: Icon(Icons.person),
                       onPressed: () {
                         // Profil sayfasına yönlendirme
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ProfileScreen()));
                       },
                     ),
                   ],
@@ -138,28 +121,29 @@ class _StoryScreenState extends State<StoryScreen> {
               itemCount: filteredNews.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(filteredNews[index]['title']),
-                  subtitle: Text(filteredNews[index]['description']),
-                  leading: Image.network(filteredNews[index]['imageUrl']),
+                  title: Text(filteredNews[index].title),
+                  //subtitle: Text("denemeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"),
+                  subtitle: Text(filteredNews[index].description),
+                  //leading: Image.network(filteredNews[index].description),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
                         icon: Icon(
-                          filteredNews[index]['liked']
+                          filteredNews[index].liked
                               ? Icons.favorite
                               : Icons.favorite_border,
                           color:
-                          filteredNews[index]['liked'] ? Colors.red : null,
+                          filteredNews[index].liked ? Colors.red : null,
                         ),
                         onPressed: () => widget.toggleLike(index),
                       ),
                       IconButton(
                         icon: Icon(
-                          filteredNews[index]['saved']
+                          filteredNews[index].saved
                               ? Icons.bookmark
                               : Icons.bookmark_border,
-                          color: filteredNews[index]['saved']
+                          color: filteredNews[index].saved
                               ? Colors.black
                               : null,
                         ),
