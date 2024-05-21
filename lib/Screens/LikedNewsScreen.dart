@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:aijam/Models/Story.dart';
 
 class LikedNewsScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> news;
+  final List<Story> stories;
   final Function(int) onItemTapped;
   final Function(int) toggleLike;
 
   LikedNewsScreen(
-      {required this.news,
-        required this.onItemTapped,
-        required this.toggleLike});
+      {required this.stories,
+      required this.onItemTapped,
+      required this.toggleLike});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Beğeniler'),
+        title: Text('Beğenilen Hikayeler'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -23,16 +24,15 @@ class LikedNewsScreen extends StatelessWidget {
         ),
       ),
       body: ListView.builder(
-        itemCount: news.length,
+        itemCount: stories.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(news[index]['title']),
-            subtitle: Text(news[index]['description']),
-            leading: Image.network(news[index]['imageUrl']),
+            title: Text(stories[index].title),
+            subtitle: Text(stories[index].description),
             trailing: IconButton(
               icon: Icon(
-                news[index]['liked'] ? Icons.favorite : Icons.favorite_border,
-                color: news[index]['liked'] ? Colors.red : null,
+                stories[index].liked ? Icons.favorite : Icons.favorite_border,
+                color: stories[index].liked ? Colors.red : null,
               ),
               onPressed: () => toggleLike(index),
             ),

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:aijam/Models/Story.dart';
 
 class SavedNewsScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> news;
+  final List<Story> stories;
   final Function(int) onItemTapped;
   final Function(int) toggleSave;
 
   SavedNewsScreen(
-      {required this.news,
-        required this.onItemTapped,
-        required this.toggleSave});
+      {required this.stories,
+      required this.onItemTapped,
+      required this.toggleSave});
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +24,16 @@ class SavedNewsScreen extends StatelessWidget {
         ),
       ),
       body: ListView.builder(
-        itemCount: news.length,
+        itemCount: stories.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(news[index]['title']),
-            subtitle: Text(news[index]['description']),
-            leading: Image.network(news[index]['imageUrl']),
+            title: Text(stories[index].title),
+            subtitle: Text(stories[index].description),
+            leading: Image.network(stories[index].imageUrl),
             trailing: IconButton(
               icon: Icon(
-                news[index]['saved'] ? Icons.bookmark : Icons.bookmark_border,
-                color: news[index]['saved'] ? Colors.black : null,
+                stories[index].saved ? Icons.bookmark : Icons.bookmark_border,
+                color: stories[index].saved ? Colors.black : null,
               ),
               onPressed: () => toggleSave(index),
             ),

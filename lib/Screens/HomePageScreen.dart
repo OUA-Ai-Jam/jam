@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:aijam/Models/Story.dart';
 import 'package:aijam/Screens/CategoriesScreen.dart';
 import 'package:aijam/Screens/LikedNewsScreen.dart';
 import 'package:aijam/Screens/SavedNewsScreen.dart';
 import 'package:aijam/Screens/StoryScreen.dart';
-import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class HomePageScreen extends StatefulWidget {
@@ -18,9 +18,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   Future<String?> aiText() async {
     String duzenlenmis = "";
-    final model = GenerativeModel(model: 'gemini-pro', apiKey: "AIzaSyA1GDMT85HNnsaCO6avc0zTGE-skFwowSU");
+    final model = GenerativeModel(
+        model: 'gemini-pro',
+        apiKey: "AIzaSyA1GDMT85HNnsaCO6avc0zTGE-skFwowSU");
 
-    final prompt = "Sıradışı 2 tane hikaye yazın. Başlık ve hikayenin kendisi (yaklaşık 300 kelime olmalı) ve anahtar kelimeler (json formatında olmalı) ve ilgi çekici 100 harfi geçmeyen bir açıklama cümlesi olarak ayırmanı ve bunları json formatında dizi olarak istiyorum. Jsonda title,story ,description ve keywords olacak.";
+    final prompt =
+        "Sıradışı 2 tane hikaye yazın. Başlık ve hikayenin kendisi (yaklaşık 300 kelime olmalı) ve anahtar kelimeler (json formatında olmalı) ve ilgi çekici 100 harfi geçmeyen bir açıklama cümlesi olarak ayırmanı ve bunları json formatında dizi olarak istiyorum. Jsonda title,story ,description ve keywords olacak.";
     final content = [Content.text(prompt)];
     final response = await model.generateContent(content);
     duzenlenmis = response.text!.replaceAll('```', '');
@@ -39,11 +42,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
           story = storyFromJson(responseText);
         });
       } else {
-        // Handle the case where the response is null (e.g., error, no data)
         print('Error: No data received from the AI model.');
       }
     } catch (error) {
-      // Handle potential errors during the AI request
       print('Error fetching stories: $error');
     }
   }
@@ -57,35 +58,15 @@ class _HomePageScreenState extends State<HomePageScreen> {
   int _selectedIndex = 2;
   Set<String> _selectedCategories = {};
 
-  List<Map<String, dynamic>> news = List.generate(
-    20,
-        (index) => {
-      'title': 'Haber Başlığı $index',
-      'description': 'Haber açıklaması',
-      'category': [
-        'Fantasy',
-        'Mystery',
-        'Tragedy',
-        'Science Fiction',
-        'Thriller'
-      ][index % 5],
-      'imageUrl': 'https://via.placeholder.com/150',
-      'liked': false,
-      'saved': false,
-    },
-  );
+  List<Story> get likedStories => story.where((item) => item.liked).toList();
+  List<Story> get savedStories => story.where((item) => item.saved).toList();
 
-  List<Map<String, dynamic>> get likedNews =>
-      news.where((item) => item['liked']).toList();
-  List<Map<String, dynamic>> get savedNews =>
-      news.where((item) => item['saved']).toList();
-
-  List<Story> get filteredNews {
+  List<Story> get filteredStories {
     if (_selectedCategories.isEmpty) {
       return story;
     } else {
       return story
-          .where((item) => _selectedCategories.contains(item.saved))
+          .where((item) => _selectedCategories.any((category) => item.keywords.contains(category)))
           .toList();
     }
   }
@@ -93,8 +74,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
   static List<Widget> _pages(
       BuildContext context,
       List<Story> story,
-      List<Map<String, dynamic>> likedNews,
-      List<Map<String, dynamic>> savedNews,
+      List<Story> likedStories,
+      List<Story> savedStories,
       Set<String> selectedCategories,
       Function(String) onCategorySelected,
       Function(int) onItemTapped,
@@ -112,9 +93,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
           toggleLike: toggleLike,
           toggleSave: toggleSave),
       SavedNewsScreen(
-          news: savedNews, onItemTapped: onItemTapped, toggleSave: toggleSave),
+          stories: savedStories, onItemTapped: onItemTapped, toggleSave: toggleSave),
       LikedNewsScreen(
-          news: likedNews, onItemTapped: onItemTapped, toggleLike: toggleLike),
+          stories: likedStories, onItemTapped: onItemTapped, toggleLike: toggleLike),
     ];
   }
 
@@ -137,67 +118,66 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   void _toggleLike(int index) {
     setState(() {
-      news[index]['liked'] = !news[index]['liked'];
+      story[index].liked = !story[index].liked;
     });
   }
 
   void _toggleSave(int index) {
     setState(() {
-      news[index]['saved'] = !news[index]['saved'];
+      story[index].saved = !story[index].saved;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-  if(story.isNotEmpty){
-    return Scaffold(
-      body: _pages(
-          context,
-          filteredNews,
-          likedNews,
-          savedNews,
-          _selectedCategories,
-          _onCategorySelected,
-          _onItemTapped,
-          _toggleLike,
-          _toggleSave)[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Arama',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.category),
-            label: 'Kategoriler',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Ana Sayfa',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
-            label: 'Kaydedilenler',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Beğenilenler',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.black,
-        onTap: _onItemTapped,
-      ),
-    );
-  }else{
-    return Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      )
-    );
-  }
+    if (story.isNotEmpty) {
+      return Scaffold(
+        body: _pages(
+            context,
+            filteredStories,
+            likedStories,
+            savedStories,
+            _selectedCategories,
+            _onCategorySelected,
+            _onItemTapped,
+            _toggleLike,
+            _toggleSave)[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Arama',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.category),
+              label: 'Kategoriler',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Ana Sayfa',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bookmark),
+              label: 'Kaydedilenler',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Beğenilenler',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.black,
+          onTap: _onItemTapped,
+        ),
+      );
+    } else {
+      return Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ));
+    }
   }
 }

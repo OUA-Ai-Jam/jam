@@ -11,8 +11,8 @@ class StoryScreen extends StatefulWidget {
   final Function(int) toggleLike;
   final Function(int) toggleSave;
 
-  StoryScreen(
-      {required this.story,
+  StoryScreen({
+        required this.story,
         required this.selectedCategories,
         required this.onCategorySelected,
         required this.toggleLike,
@@ -38,11 +38,11 @@ class _StoryScreenState extends State<StoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredNews = widget.story
-        .where((item) =>
-    widget.selectedCategories.isEmpty ||
-        widget.selectedCategories.contains(item.liked))
-        .toList();
+    final filteredNews = widget.story.where((item) {
+      if (widget.selectedCategories.isEmpty) return true;
+      return widget.selectedCategories.any((category) =>
+          item.keywords.contains(category));
+    }).toList();
 
     FirebaseAuth.instance
         .idTokenChanges()
@@ -140,7 +140,9 @@ class _StoryScreenState extends State<StoryScreen> {
                           color:
                           filteredNews[index].liked ? Colors.red : null,
                         ),
-                        onPressed: () => widget.toggleLike(index),
+                        onPressed: () => toggleLike(
+                          widget.story.indexOf(filteredNews[index]),
+                        ),
                       ),
                       IconButton(
                         icon: Icon(
@@ -151,7 +153,9 @@ class _StoryScreenState extends State<StoryScreen> {
                               ? Colors.black
                               : null,
                         ),
-                        onPressed: () => widget.toggleSave(index),
+                        onPressed: () => toggleSave(
+                          widget.story.indexOf((filteredNews[index]))
+                        ),
                       ),
                     ],
                   ),
