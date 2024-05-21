@@ -19,8 +19,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
   Future<String?> aiText() async {
     String duzenlenmis = "";
     final model = GenerativeModel(
-        model: 'gemini-pro',
-        apiKey: "AIzaSyA1GDMT85HNnsaCO6avc0zTGE-skFwowSU");
+        model: 'gemini-pro', apiKey: "AIzaSyA1GDMT85HNnsaCO6avc0zTGE-skFwowSU");
 
     final prompt =
         "Sıradışı 2 tane hikaye yazın. Başlık ve hikayenin kendisi (yaklaşık 300 kelime olmalı) ve anahtar kelimeler (json formatında olmalı) ve ilgi çekici 100 harfi geçmeyen bir açıklama cümlesi olarak ayırmanı ve bunları json formatında dizi olarak istiyorum. Jsonda title,story ,description ve keywords olacak.";
@@ -66,7 +65,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
       return story;
     } else {
       return story
-          .where((item) => _selectedCategories.any((category) => item.keywords.contains(category)))
+          .where((item) => _selectedCategories
+              .any((category) => item.keywords.contains(category)))
           .toList();
     }
   }
@@ -93,9 +93,16 @@ class _HomePageScreenState extends State<HomePageScreen> {
           toggleLike: toggleLike,
           toggleSave: toggleSave),
       SavedNewsScreen(
-          stories: savedStories, onItemTapped: onItemTapped, toggleSave: toggleSave),
+          stories: savedStories,
+          onItemTapped: onItemTapped,
+          toggleSave: toggleSave),
       LikedNewsScreen(
-          stories: likedStories, onItemTapped: onItemTapped, toggleLike: toggleLike),
+          stories: likedStories,
+          onItemTapped: onItemTapped,
+          toggleLike: (int index) {
+            final storyIndex = story.indexOf(likedStories[index]);
+            toggleLike(storyIndex);
+          }),
     ];
   }
 
@@ -176,8 +183,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
     } else {
       return Scaffold(
           body: Center(
-            child: CircularProgressIndicator(),
-          ));
+        child: CircularProgressIndicator(),
+      ));
     }
   }
 }

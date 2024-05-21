@@ -34,7 +34,8 @@ class LikedNewsScreen extends StatelessWidget {
                 stories[index].liked ? Icons.favorite : Icons.favorite_border,
                 color: stories[index].liked ? Colors.red : null,
               ),
-              onPressed: () => toggleLike(index),
+              onPressed: () => toggleLike(
+                  index), // Ana hikaye listesindeki doğru indeksi kullan
             ),
           );
         },
