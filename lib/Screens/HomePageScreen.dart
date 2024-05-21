@@ -95,7 +95,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
       SavedNewsScreen(
           stories: savedStories,
           onItemTapped: onItemTapped,
-          toggleSave: toggleSave),
+          toggleSave: (int index) {
+            final storyIndex = story.indexOf(savedStories[index]);
+            toggleSave(storyIndex);
+          }),
       LikedNewsScreen(
           stories: likedStories,
           onItemTapped: onItemTapped,

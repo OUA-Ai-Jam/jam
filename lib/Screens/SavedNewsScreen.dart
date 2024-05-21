@@ -6,10 +6,11 @@ class SavedNewsScreen extends StatelessWidget {
   final Function(int) onItemTapped;
   final Function(int) toggleSave;
 
-  SavedNewsScreen(
-      {required this.stories,
-      required this.onItemTapped,
-      required this.toggleSave});
+  SavedNewsScreen({
+    required this.stories,
+    required this.onItemTapped,
+    required this.toggleSave,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,8 @@ class SavedNewsScreen extends StatelessWidget {
                 stories[index].saved ? Icons.bookmark : Icons.bookmark_border,
                 color: stories[index].saved ? Colors.black : null,
               ),
-              onPressed: () => toggleSave(index),
+              onPressed: () => toggleSave(
+                  index), // Ana hikaye listesindeki doğru indeksi kullan
             ),
           );
         },
