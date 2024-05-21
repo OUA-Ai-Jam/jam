@@ -182,7 +182,7 @@ class _StoryScreenState extends State<StoryScreen> {
           ),
           SizedBox(width: 8),
           Text(
-            FirebaseAuth.instance.currentUser!.displayName ?? '',
+            FirebaseAuth.instance.currentUser!.displayName ?? FirebaseAuth.instance.currentUser!.email ?? "",
             style:
             TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),

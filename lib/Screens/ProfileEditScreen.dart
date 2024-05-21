@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:aijam/Screens/HomePageScreen.dart';
 import 'package:aijam/Widgets/EditItem.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -39,9 +40,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: IconButton(
               onPressed: () {
                 updateProfile();
-                setState(() {
-
-                });
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePageScreen(),
+                  ),
+                ).then((value) => setState((){}));
               },
             style: IconButton.styleFrom(
               backgroundColor: Colors.lightBlueAccent,
