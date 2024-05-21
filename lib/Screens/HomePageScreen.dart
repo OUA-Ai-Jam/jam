@@ -83,6 +83,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
     return [
       Center(child: Text('Arama Sayfası')),
       CategoriesScreen(
+          story: story,
           onCategorySelected: onCategorySelected,
           selectedCategories: selectedCategories),
       StoryScreen(

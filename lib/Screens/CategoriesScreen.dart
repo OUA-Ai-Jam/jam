@@ -1,26 +1,23 @@
+import 'package:aijam/Models/Story.dart';
 import 'package:flutter/material.dart';
 
 class CategoriesScreen extends StatelessWidget {
   final Function(String) onCategorySelected;
   final Set<String> selectedCategories;
-
+  final List<Story> story;
   CategoriesScreen(
-      {required this.onCategorySelected, required this.selectedCategories});
+      {required this.onCategorySelected, required this.selectedCategories,required this.story});
 
   @override
   Widget build(BuildContext context) {
+    List<String> allCat = [];
+    for(Story sty in story){
+      allCat.addAll(sty.keywords);
+    }
     return GridView.count(
       crossAxisCount: 2,
       children: [
-        for (var category in [
-          'Fantasy',
-          'Mystery',
-          'Tragedy',
-          'Science Fiction',
-          'Thriller',
-          'Education',
-          'Climate'
-        ])
+        for (var category in allCat)
           CategoryCard(
             category: category,
             onCategorySelected: onCategorySelected,
