@@ -1,3 +1,4 @@
+import 'package:aijam/Screens/HomePageScreen.dart';
 import 'package:aijam/Screens/ProfileEditScreen.dart';
 import 'package:aijam/Widgets/SettingItem.dart';
 import 'package:aijam/Widgets/forward_button.dart';
@@ -93,10 +94,12 @@ bool isDarkMode = false;
                   iconColor: Colors.red,
                   onTap: () {
                     FirebaseAuth.instance.signOut();
-                    Navigator.of(context).pop();
-                    setState(() {
-
-                    });
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePageScreen(),
+                      ),
+                    ).then((value) => setState((){}));
                   },
                 ),
             ],),

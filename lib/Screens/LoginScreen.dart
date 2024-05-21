@@ -1,3 +1,4 @@
+import 'package:aijam/Screens/HomePageScreen.dart';
 import 'package:aijam/Screens/ProfileScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:aijam/firebase_options.dart';
@@ -113,10 +114,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           email: email,
                           password: password
                       );
-                      Navigator.of(context).pop();
-                      setState(() {
-
-                      });
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePageScreen(),
+                        ),
+                      ).then((value) => setState((){}));
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
                         print('No user found for that email.');
