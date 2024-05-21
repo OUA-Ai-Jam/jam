@@ -12,7 +12,6 @@ class HomePageScreen extends StatefulWidget {
   @override
   State<HomePageScreen> createState() => _HomePageScreenState();
 }
-
 class _HomePageScreenState extends State<HomePageScreen> {
   List<Story> story = [];
 
@@ -22,7 +21,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         model: 'gemini-pro', apiKey: "AIzaSyA1GDMT85HNnsaCO6avc0zTGE-skFwowSU");
 
     final prompt =
-        "Sıradışı 2 tane hikaye yazın. Başlık ve hikayenin kendisi (yaklaşık 300 kelime olmalı) ve anahtar kelimeler (json formatında olmalı) ve ilgi çekici 100 harfi geçmeyen bir açıklama cümlesi olarak ayırmanı ve bunları json formatında dizi olarak istiyorum. Jsonda title,story ,description ve keywords olacak.";
+        "Fantastik, gizemli, trajedi, bilim kurgu konulu ikişer tane hikaye yazın. Başlık ve hikayenin kendisi (yaklaşık 300 kelime olmalı) ve anahtar kelimeler (json formatında olmalı) ve ilgi çekici 100 harfi geçmeyen bir açıklama cümlesi olarak ayırmanı ve bunları json formatında dizi olarak istiyorum. Jsonda title,story ,description ve keywords olacak.";
     final content = [Content.text(prompt)];
     final response = await model.generateContent(content);
     duzenlenmis = response.text!.replaceAll('```', '');

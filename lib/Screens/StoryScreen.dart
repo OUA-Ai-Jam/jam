@@ -54,6 +54,13 @@ class _StoryScreenState extends State<StoryScreen> {
       }
     });
 
+    List<String> allCat = [];
+
+    for(Story story in filteredNews){
+      allCat.addAll(story.keywords);
+    }
+    print(allCat);
+
     return SafeArea(
       child: Column(
         children: [
@@ -95,18 +102,14 @@ class _StoryScreenState extends State<StoryScreen> {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                for (var category in [
-                  'Fantasy',
-                  'Mystery',
-                  'Tragedy',
-                  'Science Fiction',
-                  'Thriller'
-                ])
+                for (var category in allCat)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ActionChip(
                       label: Text(category),
-                      onPressed: () => widget.onCategorySelected(category),
+                      onPressed: () => {
+                        widget.onCategorySelected(category),
+                      },
                       backgroundColor:
                       widget.selectedCategories.contains(category)
                           ? Colors.blue
